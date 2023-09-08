@@ -2,17 +2,18 @@
 
 # Remote library imports
 from flask import Flask
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from flask_cors import CORS
 from flask_migrate import Migrate
+from flask_bcrypt import Bcrypt
 from flask_restful import Api
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import MetaData
 from sqlalchemy.orm import validates
 import secrets
 from dotenv import load_dotenv
 load_dotenv()
-import os
+# import os
 # Local imports
 
 
@@ -37,15 +38,13 @@ app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.json.compact = False
-app.config['SECRET_KEY'] = secrets.token_hex(16)
+app.secret_key = secrets.token_hex(16)
 login_manager = LoginManager()
 login_manager.init_app(app)
 
 
-@login_manager.user_loader
-def load_user(user_id):
-    from models import User
-    return db.query(User).get(int(user_id))
+
+
 
 
 # Define metadata, instantiate db
@@ -67,4 +66,4 @@ api = Api(app)
 # Instantiate CORS
 CORS(app)
 
-# bcrypt = Bcrypt(app)
+bcrypt = Bcrypt(app)
