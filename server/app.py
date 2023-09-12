@@ -82,6 +82,13 @@ class Login(Resource):
     #         return User.get(int(user_id))
     #     except NoResultFound:
     #         return None
+    def get(self):
+        if current_user.is_authenticated:
+            id = current_user.get_id()
+            username = current_user.username
+            return ({"id":id, "username":username}), 200
+        else:
+            return jsonify({})
     def post(self):
         if current_user.is_authenticated:
             return make_response(jsonify({'message' : 'You are already logged in'}), 400)
@@ -97,12 +104,12 @@ class Login(Resource):
         else:
             return ('Invalid username or password'), 401
         
-@login_manager.user_loader
-def load_user(id):
-    try:
-        return (User.query.get(int(id)))
-    except NoResultFound:
-        return None, print('user not found')
+    @login_manager.user_loader
+    def load_user(id):
+        try:
+            return (User.query.get(int(id)))
+        except NoResultFound:
+            return None, print('user not found')
 
 class Logout(Resource):
     def delete(self):
@@ -175,9 +182,9 @@ class NotesByID(Resource):
         note = Note.query.filter_by(id=id).first()
         if note:
             try:
+                note.title = request.get_json()['title'] or 'Untitled'
+                note.text = request.get_json()['text']
                 if note.text is not None:
-                    note.title = request.get_json()['title'] or 'Untitled'
-                    note.text = request.get_json()['text']
                     db.session.add(note)
                     db.session.commit()
                     return note.to_dict(), 200
@@ -198,14 +205,14 @@ class NotesByID(Resource):
         
         
 
-api.add_resource(Users, '/api/users')
-api.add_resource(UsersByID, '/api/users/<int:id>')
-api.add_resource(Notes, '/api/notes')
-api.add_resource(NotesByID, '/api/notes/<int:id>')
-api.add_resource(Favorites, '/api/favorites')
-api.add_resource(FavoritesByID, '/api/favorites/<int:id>')
-api.add_resource(Login, '/api/login')
-api.add_resource(Logout, '/api/logout')
+api.add_resource(Users, '/users')
+api.add_resource(UsersByID, '/users/<int:id>')
+api.add_resource(Notes, '/notes')
+api.add_resource(NotesByID, '/notes/<int:id>')
+api.add_resource(Favorites, '/favorites')
+api.add_resource(FavoritesByID, '/favorites/<int:id>')
+api.add_resource(Login, '/login')
+api.add_resource(Logout, '/logout')
 
 # @app.route('/', defaults={'path': ''})
 # @app.route('/<path:path>')
