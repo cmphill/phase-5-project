@@ -203,8 +203,35 @@ class NotesByID(Resource):
         else:
             return {'error' : 'Could not find note'}, 404
         
-        
+class Articles(Resource):
+    def get(self):
+        articles = [article.to_dict() for article in Article.query.all()]
+        return articles, 200
 
+class ArticleSearchByTitle(Resource):
+    def get(self):
+        title_search = request.args.get('title', default = '', type = str)
+        articles = Article.query.filter(Article.title.like(f'%{title_search}%')).limit(10).all()
+        article_briefs = []
+        for article in articles:
+            article_brief = {
+                "id": article.id,
+                "name": article.title,
+                "url": article.url,
+            }
+            article_briefs.append(article_brief)
+        return article_briefs
+    
+class ArticleById(Resource):
+    def get(self, id):
+        article = Article.query.filter_by(id=id).first()
+        if article:
+            return article.to_dict(), 200
+        else:
+            return {'error' : 'Could not find favorite'}, 404
+        
+api.add_resource(ArticleById, '/article/<int:id>')
+api.add_resource(ArticleSearchByTitle, '/search')
 api.add_resource(Users, '/users')
 api.add_resource(UsersByID, '/users/<int:id>')
 api.add_resource(Notes, '/notes')
