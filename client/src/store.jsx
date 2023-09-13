@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 
 
-const useStore = create(set =>  ({
+const useStore = create (set =>  ({
     users: [],
     addUser: (user) => set(state => ({users: [...state.users, user]})),
     current_user : [],
@@ -15,6 +15,10 @@ const useStore = create(set =>  ({
     signupErrors: [],
     addSignupErrors: (error) => set(state => ({signupErrors: [...state.signupErrors, error]})),
     clearSignupErrors: () => set({signupErrors: []}),
+
+    items: [], 
+    addItems: (item) => set(state => ({items: [...state.items, item]})),
+    clearItems: () => set({items: []}),
 
 }))
 

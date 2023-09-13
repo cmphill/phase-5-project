@@ -217,7 +217,7 @@ class ArticleSearchByTitle(Resource):
             article_brief = {
                 "id": article.id,
                 "name": article.title,
-                "url": article.url,
+                "url": article.article_url,
             }
             article_briefs.append(article_brief)
         return article_briefs
@@ -229,7 +229,7 @@ class ArticleById(Resource):
             return article.to_dict(), 200
         else:
             return {'error' : 'Could not find favorite'}, 404
-        
+api.add_resource(Articles, '/articles')        
 api.add_resource(ArticleById, '/article/<int:id>')
 api.add_resource(ArticleSearchByTitle, '/search')
 api.add_resource(Users, '/users')
