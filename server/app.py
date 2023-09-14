@@ -211,7 +211,7 @@ class Articles(Resource):
 class ArticleSearchByTitle(Resource):
     def get(self):
         title_search = request.args.get('title', default = '', type = str)
-        articles = Article.query.filter(Article.title.like(f'%{title_search}%')).limit(10).all()
+        articles = Article.query.filter(Article.title.like(f'%{title_search}%')).limit(5).all()
         article_briefs = []
         for article in articles:
             article_brief = {

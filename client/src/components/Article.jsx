@@ -3,10 +3,9 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import unstarred from '../assets/unstarred.png'
 import starred from '../assets/starred.png'
 import Button from 'react-bootstrap/Button'
-import ToggleButtonGroup from 'react-bootstrap/ToggleButtonGroup'
-import ToggleButton from 'react-bootstrap/ToggleButton'
 import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
+import Nav from 'react-bootstrap/Nav'
 import useStore from '../store'
 
 
@@ -17,7 +16,7 @@ function Article() {
 
   
     return (
-        <div className="d-flex justify-content-around">
+        <div >
         <Card style={{width: '85vw', height: '75vh' }}>
             {/* add note button to expand accordion element */}
             <Card.Body>
@@ -34,15 +33,11 @@ function Article() {
                 </ListGroup>
                 {/* Description space (expanding)
                 favorite button */}
-                <ToggleButtonGroup type="checkbox" value={isFavoriteArticle} onChange={toggleIsFavoriteArticle}>
-                    <ToggleButton value={false}>
-                        <img src={unstarred} alt="add to favorites" />
-                    </ToggleButton>
-                    <ToggleButton value={true}>
-
-                    </ToggleButton>
-                </ToggleButtonGroup>
-
+                <div className="button-container">
+                    <Button size="sm" className='favorite-button' onClick={toggleIsFavoriteArticle}>
+                        {isFavoriteArticle ? <img className='favorite-img' src={starred} alt="Remove from favorites" /> : <img className='favorite-image' src={unstarred} alt="Add to favorites" />}
+                    </Button>
+                </div>
             </Card.Body>
         </Card>
         </div>
