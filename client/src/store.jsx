@@ -20,6 +20,9 @@ const useStore = create (set =>  ({
     addItems: (item) => set(state => ({items: [...state.items, item]})),
     clearItems: () => set({items: []}),
 
+    isFavoriteArticle: false,
+    toggleIsFavoriteArticle: () => set((state) => ({isFavoriteArticle: !state.isFavoriteArticle}))
+
 }))
 
 export default useStore;
