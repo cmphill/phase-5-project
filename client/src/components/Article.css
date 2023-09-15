@@ -30,3 +30,12 @@
 div.card-body {
     position: relative;
 }
+
+div.card-header {
+    align-content: flex-start;
+   
+}
+
+button.edit-button {
+    justify-content: right;
+}
