@@ -40,7 +40,9 @@ function Login() {
             addLoginErrors(error.message)
         })
     }
-
+    function setUser() {
+        fetch('/api/')
+    }
 // .then(res => {
 //     if (!res.ok) {
 //         throw new Error('Network response was not ok');

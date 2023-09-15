@@ -7,23 +7,26 @@ import Card from 'react-bootstrap/Card'
 import ListGroup from 'react-bootstrap/ListGroup'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
-import useStore from '../store'
 import Accordion from 'react-bootstrap/Accordion'
 import {useAccordionButton} from 'react-bootstrap/AccordionButton'
 import { useState } from 'react'
 import FormControl from 'react-bootstrap/FormControl'
+import useStore from '../store'
+import CaretIcon from '../assets/caret.svg'
 
-function CustomToggle({ children, eventKey, setIsEditable}) {
-    const edit= useAccordionButton(eventKey, () =>
-      setIsEditable(isEditable => !isEditable)
-    );
+function CustomToggle({ children, eventKey, setIsEditable, isEditable, className}) {
+    const edit= useAccordionButton(eventKey, () => 
+        setIsEditable()
+
+    )
   
     return (
       <button
         className='edit-button'
         type="button"
-        style={{ backgroundColor: 'pink' }}
+        style={isEditable ? {backgroundColor: 'pink'} : {backgroundColor: 'blue'}}
         onClick={edit}
+
       >
         {children}
       </button>
@@ -35,14 +38,30 @@ function CustomToggle({ children, eventKey, setIsEditable}) {
 
   
 function Article() {
-    const [isEditable, setIsEditable] = useState(false)
-    const [key, setKey] = useState('article')
+    const isEditable = useStore(state => state.isEditable)
+    const setIsEditable = useStore(state => state.setIsEditable)
     const isFavoriteArticle = useStore(state => state.isFavoriteArticle)
     const toggleIsFavoriteArticle = useStore(state => state.toggleIsFavoriteArticle)
+    const current_user = useStore(state => state.current_user)
+
+    function userFavoriteArticle(article.id) {
+        if isFavoriteArticle(article.id) {
+            fetch(/api/favorites, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    article_id: article.id,
+                    user_id: current_user.id
+                })
+            })
+    }
+
+    
+
 
   
     return (
-        <Tabs activeKey={key} onSelect={(k) => setKey(k)} className="mb-3">
+        <Tabs >
                 <Tab eventKey="article" title="Article">
                     <Card style={{width: '85vw', height: '75vh' }}>
                         {/* add note button to expand accordion element */}
@@ -74,18 +93,21 @@ function Article() {
                         <Card.Title>Article Title + 'Notes'</Card.Title>
                         <Accordion defaultActiveKey="0">
                             <Card>
-                                <Card.Header /*className="d-flex justify-content-between"*/ >
-                                    <Accordion.Header eventKey="0"> </Accordion.Header>
-                                    <CustomToggle className="ms-auto"  eventKey="0" setIsEditable={setIsEditable}>Edit</CustomToggle>
+                            
+                                <Card.Header className="d-flex justify-content-between" >
+                                    <CustomToggle eventKey="0" >{<img src={CaretIcon} alt="Caret Icon"/>}</CustomToggle>
+                                    <CustomToggle className="ms-auto"  eventKey="0" setIsEditable={setIsEditable} isEditable={isEditable}>{isEditable? 'Save' : 'Edit'}</CustomToggle>
                                 </Card.Header >
+                               
                                 <Accordion.Collapse eventKey="0">
-                                    <Card.Body>
-                                        <FormControl 
+                                    <Card.Body style={{padding: 5, backgroundColor:'pink'}}>
+                                        <FormControl
                                             as='textarea'
                                             plaintext
-                                            rows={3}
-                                            readOnly={false}
-                                            defaultValue="Enter your note here"
+                                            rows={5}
+                                            readOnly={!isEditable}
+                                            placeholder='Enter your notes here...'
+                                            style={{backgroundColor: '#b4b5b6', padding: 5}}
                                         />
                                     </Card.Body>
                                 </Accordion.Collapse>

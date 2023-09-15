@@ -21,7 +21,12 @@ const useStore = create (set =>  ({
     clearItems: () => set({items: []}),
 
     isFavoriteArticle: false,
-    toggleIsFavoriteArticle: () => set((state) => ({isFavoriteArticle: !state.isFavoriteArticle}))
+    toggleIsFavoriteArticle: () => set((state) => ({isFavoriteArticle: !state.isFavoriteArticle})),
+
+    isEditable: false,
+    setIsEditable: () => set((state) => ({isEditable: !state.isEditable})),
+
+    
 
 }))
 
