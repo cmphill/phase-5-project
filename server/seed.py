@@ -28,7 +28,7 @@ if __name__ == '__main__':
             user = User(
                 username = fake.user_name(),
             )
-            user.password_hash = "123s"
+            user.password_hash = fake.password()
             db.session.add(user)
             db.session.commit()
             users.append(user)

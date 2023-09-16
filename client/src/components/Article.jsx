@@ -15,7 +15,7 @@ import FormControl from 'react-bootstrap/FormControl'
 import useStore from '../store'
 import CaretIcon from '../assets/caret.svg'
 
-function CustomToggle({ children, eventKey, setIsEditable, isEditable, className}) {
+function CustomToggle({ children, eventKey, setIsEditable, isEditable, buttonName}) {
     const edit= useAccordionButton(eventKey, () => 
         setIsEditable(!setIsEditable)
 
@@ -49,9 +49,10 @@ function Article() {
     const addFavoriteArticle = useStore(state => state.addFavoriteArticle)
     const deleteFavoriteArticle = useStore(state => state.deleteFavoriteArticle)
     
-    function userFavoriteArticle() {
+    function userFavoriteArticle(articleId) {
         if (isFavoriteArticle !== true && current_user) {
             console.log(current_user, isFavoriteArticle, 'this is current user in add to favorites')
+            
             fetch('/api/favorites', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json'},
@@ -59,19 +60,36 @@ function Article() {
                     article_id: articleId,
                 })
             })
-            .then((res) => res.json())
-            .then((newFavorite) => {
-                addFavoriteArticle(newFavorite)
-                toggleIsFavoriteArticle()
+            .then((res) => {
+                if (res.ok) {
+                    res.json().then(newFavorite => {
+                        console.log('Response from server:', newFavorite);
+                        addFavoriteArticle(newFavorite)
+                        toggleIsFavoriteArticle()
+                    })
+                    }
+                
+                else {
+                    res.json().then(errors => {
+                        console.log('we\'ve sprung an error')
+                        console.log(errors)
+                     })
+                 }
             })
-        } if (isFavoriteArticle === true && current_user) {
-            console.log(current_user, isFavoriteArticle, 'this is current user in remove from favorites')
-            fetch(`/api/favorites/${articleId}`, {
+        } else if (isFavoriteArticle === true && current_user) {
+            console.log(current_user)
+            console.log(useStore.getState().favoriteArticles)
+            const favorite = useStore.getState().favoriteArticles.find(favorite => favorite.article_id === articleId)
+            console.log(favorite)
+            if (favorite) {
+            fetch(`/api/favorites/${favorite.id}`, {
                 method: 'DELETE',
             }).then(() =>{ 
-                deleteFavoriteArticle(articleId)
-                toggleIsFavoriteArticle()
+                deleteFavoriteArticle(favorite.id),
+                toggleIsFavoriteArticle(),
+                console.log('we got this far')
             })
+            }
         }
         else {
             console.log('you are not logged in')
@@ -102,7 +120,7 @@ function Article() {
                             {/* Description space (expanding)
                             favorite button */}
                             <div className="button-container">
-                                <Button size="sm" className='favorite-button' onClick={userFavoriteArticle}>
+                                <Button size="sm" className='favorite-button' onClick={() => userFavoriteArticle(articleId)}>
                                     {isFavoriteArticle ? <img className='favorite-img' src={starred} alt="Remove from favorites" /> : <img className='favorite-img' src={unstarred} alt="Add to favorites" />}
                                 </Button>
                             </div>
@@ -118,7 +136,7 @@ function Article() {
                             
                                 <Card.Header className="d-flex justify-content-between" >
                                     <CustomToggle eventKey="0" >{<img src={CaretIcon} alt="Caret Icon"/>}</CustomToggle>
-                                    <CustomToggle className="ms-auto"  eventKey="0" setIsEditable={setIsEditable} isEditable={isEditable}>{isEditable? 'Save' : 'Edit'}</CustomToggle>
+                                    <CustomToggle className="ms-auto"  eventKey="0" buttonName={"ms-auto"} setIsEditable={setIsEditable} isEditable={isEditable}>{isEditable? 'Save' : 'Edit'}</CustomToggle>
                                 </Card.Header >
                                
                                 <Accordion.Collapse eventKey="0">

@@ -11,7 +11,7 @@ function Layout() {
     useEffect(() => { 
       fetch('/api/login')
         .then(res => res.json())
-        .then(res => setCurrentUser(res))
+        .then(res => {setCurrentUser(res), console.log(useStore.getState().current_user)})
       }, [setCurrentUser])
 
     return (

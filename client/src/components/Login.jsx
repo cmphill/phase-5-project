@@ -7,15 +7,21 @@ import Row from 'react-bootstrap/Row'
 import useStore from "../store"
 import * as yup from 'yup'
 import * as formik from 'formik'
+import { useEffect } from 'react'
 
 function Login() {
     // const currentUser = useStore(state => state.current_user)
     const navigate = useNavigate()
+    const current_user = useStore(state => state.current_user)
     const setCurrentUser = useStore(state => state.setCurrentUser)
     const addLoginErrors = useStore(state => state.addLoginErrors)
     const clearLoginErrors = useStore(state => state.clearLoginErrors)
     const loginErrors = useStore(state => state.loginErrors)
- 
+    
+    useEffect(() => {
+        console.log(current_user, 'this is my use Effect')
+    }, [current_user])
+    
     function handleSubmit(values) {
         clearLoginErrors()
         console.log(values)
@@ -43,12 +49,12 @@ function Login() {
     function setUser() {
         fetch('/api/login') 
             .then (res => res.json())
-            .then (user => setCurrentUser({
+            .then (user => {setCurrentUser({
                 id: user.id,
-                username: user.username
-            }))
-
-        }
+                username: user.username,
+            }),
+            console.log(useStore.getState().current_user)
+        })}
     // .then(res => {
 //     if (!res.ok) {
 //         throw new Error('Network response was not ok');

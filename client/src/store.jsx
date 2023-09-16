@@ -4,9 +4,9 @@ import { create } from 'zustand';
 const useStore = create (set =>  ({
     users: [],
     addUser: (user) => set(state => ({users: [...state.users, user]})),
-    current_user : [],
-    setCurrentUser: (user) => set(({current_user: user})),
-    logoutCurrentUser: () => set(({current_user: null})),
+    current_user : {},
+    setCurrentUser: (state) => set({current_user: state}),
+    logoutCurrentUser: () => set({current_user: null}),
 
     loginErrors: [],
     addLoginErrors: (error) => set(state => ({loginErrors: [...state.loginErrors, error]})),
@@ -23,7 +23,15 @@ const useStore = create (set =>  ({
     isFavoriteArticle: false,
     toggleIsFavoriteArticle: () => set((state) => ({isFavoriteArticle: !state.isFavoriteArticle})),
     favoriteArticles: [],
-    deleteFavoriteArticle: (articleId) => set(state => ({favoriteArticles: state.favoriteArticles.filter((favoriteArticle) => favoriteArticle.id !== articleId)})),
+    deleteFavoriteArticle: (favoriteId) => set(state => ({
+        favoriteArticles: state.favoriteArticles.filter(favorite => favorite.id !== favoriteId)
+        // const favoriteToDelete = state.favoriteArticles.find (
+        //     favorite => favorite.articleId == articleId && favorite.user_id == userId)
+        // let newFavoriteArticles = state.favoriteArticles.filter (
+        //     favorite => favorite.id !== favoriteToDelete.id
+        // )
+        // return {favoriteArticles: newFavoriteArticles}
+    })),
     addFavoriteArticle: (newFavorite) => set(state => ({favoriteArticles: [...state.favoriteArticles, newFavorite]})), 
 
     isEditable: false,
