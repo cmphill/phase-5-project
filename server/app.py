@@ -121,11 +121,10 @@ class Favorites(Resource):
         favorites = [favorite.to_dict() for favorite in Favorite.query.all()]
         return favorites, 200
     def post(self):
-        category = request.get_json()['category']
         article_id = request.get_json()['article_id']
         user_id = current_user.get_id()
         if user_id is not None and (article_id or category):
-            newFavorite = Favorite(category=category, article_id=article_id, user_id=user_id)
+            newFavorite = Favorite(article_id=article_id, user_id=user_id)
             db.session.add(newFavorite)
             db.session.commit()
             return newFavorite.to_dict(), 201

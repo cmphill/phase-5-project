@@ -31,8 +31,8 @@ function Signup() {
             }
             return res.json()
         })
-        .then(res => {
-            setCurrentUser(res)
+        .then(() => {
+            setUser()
             navigate('/')
         })
         
@@ -41,6 +41,16 @@ function Signup() {
             addSignupErrors(error.message)
         })
     }
+
+    function setUser() {
+        fetch('/api/login') 
+            .then (res => res.json())
+            .then (user => setCurrentUser({
+                id: user.id,
+                username: user.username
+            }))
+
+        }
 
 
 

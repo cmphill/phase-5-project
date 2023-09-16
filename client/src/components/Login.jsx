@@ -30,8 +30,8 @@ function Login() {
             }
             return res.json()
         })
-        .then(res => {
-            setCurrentUser(res)
+        .then(()=> {
+            setUser();
             navigate('/')
         })
         
@@ -41,9 +41,15 @@ function Login() {
         })
     }
     function setUser() {
-        fetch('/api/')
-    }
-// .then(res => {
+        fetch('/api/login') 
+            .then (res => res.json())
+            .then (user => setCurrentUser({
+                id: user.id,
+                username: user.username
+            }))
+
+        }
+    // .then(res => {
 //     if (!res.ok) {
 //         throw new Error('Network response was not ok');
 //     }

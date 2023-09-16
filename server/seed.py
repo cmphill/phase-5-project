@@ -64,12 +64,12 @@ if __name__ == '__main__':
         
         print("Seeding Favorites...")
         favorites = [] 
-        categories = ['Culture', 'Geography', 'Health', 'History', 'Human Activities', 'Mathematics', 'Natural Sciences', 'People', 'Philosophy', 'Religion', 'Social Sciences', 'Technology']       
+        # categories = ['Culture', 'Geography', 'Health', 'History', 'Human Activities', 'Mathematics', 'Natural Sciences', 'People', 'Philosophy', 'Religion', 'Social Sciences', 'Technology']       
         for _ in range (100):
             favorite = Favorite(
                 user_id = choice(users).id,
                 article_id = choice(articles).id,
-                category = choice(categories),
+                # category = choice(categories),
             )
             db.session.add(favorite)
             db.session.commit()

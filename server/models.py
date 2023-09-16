@@ -120,7 +120,7 @@ class Favorite (db.Model, SerializerMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
     article_id = db.Column(db.Integer, db.ForeignKey('articles.id'))
-    category = db.Column(db.String)
+    
     
     user = db.relationship('User', back_populates='favorites')
     article = db.relationship('Article', back_populates='favorite')

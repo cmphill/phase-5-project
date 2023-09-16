@@ -10,13 +10,14 @@ import Tabs from 'react-bootstrap/Tabs'
 import Accordion from 'react-bootstrap/Accordion'
 import {useAccordionButton} from 'react-bootstrap/AccordionButton'
 import { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import FormControl from 'react-bootstrap/FormControl'
 import useStore from '../store'
 import CaretIcon from '../assets/caret.svg'
 
 function CustomToggle({ children, eventKey, setIsEditable, isEditable, className}) {
     const edit= useAccordionButton(eventKey, () => 
-        setIsEditable()
+        setIsEditable(!setIsEditable)
 
     )
   
@@ -38,22 +39,43 @@ function CustomToggle({ children, eventKey, setIsEditable, isEditable, className
 
   
 function Article() {
+    let { id } = useParams()
+    let articleId = parseInt(id)
     const isEditable = useStore(state => state.isEditable)
     const setIsEditable = useStore(state => state.setIsEditable)
     const isFavoriteArticle = useStore(state => state.isFavoriteArticle)
     const toggleIsFavoriteArticle = useStore(state => state.toggleIsFavoriteArticle)
     const current_user = useStore(state => state.current_user)
-
-    function userFavoriteArticle(article.id) {
-        if isFavoriteArticle(article.id) {
-            fetch(/api/favorites, {
+    const addFavoriteArticle = useStore(state => state.addFavoriteArticle)
+    const deleteFavoriteArticle = useStore(state => state.deleteFavoriteArticle)
+    
+    function userFavoriteArticle() {
+        if (isFavoriteArticle !== true && current_user) {
+            console.log(current_user, isFavoriteArticle, 'this is current user in add to favorites')
+            fetch('/api/favorites', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json'},
                 body: JSON.stringify({
-                    article_id: article.id,
-                    user_id: current_user.id
+                    article_id: articleId,
                 })
             })
+            .then((res) => res.json())
+            .then((newFavorite) => {
+                addFavoriteArticle(newFavorite)
+                toggleIsFavoriteArticle()
+            })
+        } if (isFavoriteArticle === true && current_user) {
+            console.log(current_user, isFavoriteArticle, 'this is current user in remove from favorites')
+            fetch(`/api/favorites/${articleId}`, {
+                method: 'DELETE',
+            }).then(() =>{ 
+                deleteFavoriteArticle(articleId)
+                toggleIsFavoriteArticle()
+            })
+        }
+        else {
+            console.log('you are not logged in')
+        }
     }
 
     
@@ -80,7 +102,7 @@ function Article() {
                             {/* Description space (expanding)
                             favorite button */}
                             <div className="button-container">
-                                <Button size="sm" className='favorite-button' onClick={toggleIsFavoriteArticle}>
+                                <Button size="sm" className='favorite-button' onClick={userFavoriteArticle}>
                                     {isFavoriteArticle ? <img className='favorite-img' src={starred} alt="Remove from favorites" /> : <img className='favorite-img' src={unstarred} alt="Add to favorites" />}
                                 </Button>
                             </div>
