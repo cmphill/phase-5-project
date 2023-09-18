@@ -8,46 +8,66 @@ import ListGroup from 'react-bootstrap/ListGroup'
 import Tab from 'react-bootstrap/Tab'
 import Tabs from 'react-bootstrap/Tabs'
 import Accordion from 'react-bootstrap/Accordion'
+import AccordionContext from 'react-bootstrap/AccordionContext'
 import {useAccordionButton} from 'react-bootstrap/AccordionButton'
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useEffect, useState, useContext } from 'react'
+import {useParams} from 'react-router-dom'
+
 import FormControl from 'react-bootstrap/FormControl'
 import useStore from '../store'
-import CaretIcon from '../assets/caret.svg'
 
-function CustomToggle({ children, eventKey, setIsEditable, isEditable, buttonName}) {
-    const edit= useAccordionButton(eventKey, () => 
-        setIsEditable(!setIsEditable)
+const PINK = 'rgba(255, 192, 203, 0.6)';
+const BLUE = 'rgba(0, 0, 255, 0.6)';
 
+function ContextToggle({children, eventKey, callback}) {
+    const {activeEventKey} = useContext(AccordionContext)
+        
+    const decoratedOnClick = useAccordionButton(
+        eventKey,
+        () => callback && callback(eventKey),
     )
-  
-    return (
-      <button
-        className='edit-button'
-        type="button"
-        style={isEditable ? {backgroundColor: 'pink'} : {backgroundColor: 'blue'}}
-        onClick={edit}
 
-      >
+    const isCurrentEventKey = activeEventKey === eventKey
+
+
+return (
+    <button
+    type="button"
+    style={{ backgroundColor: isCurrentEventKey ? PINK : BLUE }}
+    onClick={decoratedOnClick} >
         {children}
-      </button>
+    </button>
+)
 
-
-    );
-  }
-
-
-  
+} 
 function Article() {
+
     let { id } = useParams()
     let articleId = parseInt(id)
     const isEditable = useStore(state => state.isEditable)
-    const setIsEditable = useStore(state => state.setIsEditable)
+   
     const isFavoriteArticle = useStore(state => state.isFavoriteArticle)
     const toggleIsFavoriteArticle = useStore(state => state.toggleIsFavoriteArticle)
     const current_user = useStore(state => state.current_user)
     const addFavoriteArticle = useStore(state => state.addFavoriteArticle)
     const deleteFavoriteArticle = useStore(state => state.deleteFavoriteArticle)
+    const [activeKey, setActiveKey] = useState(3)
+    console.log(activeKey)
+
+    const [articleData, setArticleData] = useState([])
+
+    useEffect(() => {
+        fetch('/api/article/1')
+            .then(res => res.json())
+            .then(data => {
+                setArticleData(data)
+                console.log(articleData)
+                return articleData
+            })
+    
+    }, [])
+
+    
     
     function userFavoriteArticle(articleId) {
         if (isFavoriteArticle !== true && current_user) {
@@ -106,16 +126,14 @@ function Article() {
                     <Card style={{width: '85vw', height: '75vh' }}>
                         {/* add note button to expand accordion element */}
                         <Card.Body>
-                            <img className="article-image" src={'../src/assets/sunset.jpeg'} />
-                            <Card.Title>Article Title</Card.Title>
-                            <Card.Subtitle>Category Link</Card.Subtitle>
-                            <Card.Text>Article Text</Card.Text>
+                            <img className="article-image" src={articleData.image_url} />
+                            <Card.Title>{articleData.title}</Card.Title>
+                            <Card.Subtitle>{articleData.category}</Card.Subtitle>
+                            <Card.Text>{articleData.description} </Card.Text>
 
                             <ListGroup className="list-group-flush">
-                                <ListGroup.Item>This is item 1</ListGroup.Item>
-                                <ListGroup.Item>This is item 2</ListGroup.Item>
-                                <ListGroup.Item>This is item 3</ListGroup.Item>
-                                <ListGroup.Item>This is item 4</ListGroup.Item>
+                                <ListGroup.Item>{articleData.key_facts}</ListGroup.Item>
+                                <ListGroup.Item><a href={articleData.article_url}>Read on Wikipedia </a></ListGroup.Item>
                             </ListGroup>
                             {/* Description space (expanding)
                             favorite button */}
@@ -131,12 +149,12 @@ function Article() {
                     <Card style={{width: '85vw', height: '75vh' }}>
                             {/* add note button to expand accordion element */}
                         <Card.Title>Article Title + 'Notes'</Card.Title>
-                        <Accordion defaultActiveKey="0">
+                        <Accordion activeKey={activeKey}>
+                            
                             <Card>
                             
                                 <Card.Header className="d-flex justify-content-between" >
-                                    <CustomToggle eventKey="0" >{<img src={CaretIcon} alt="Caret Icon"/>}</CustomToggle>
-                                    <CustomToggle className="ms-auto"  eventKey="0" buttonName={"ms-auto"} setIsEditable={setIsEditable} isEditable={isEditable}>{isEditable? 'Save' : 'Edit'}</CustomToggle>
+                                    <ContextToggle eventKey="0" callback={callback}>buttontext</ContextToggle>
                                 </Card.Header >
                                
                                 <Accordion.Collapse eventKey="0">
