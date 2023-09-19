@@ -35,7 +35,19 @@ const useStore = create (set =>  ({
     addFavoriteArticle: (newFavorite) => set(state => ({favoriteArticles: [...state.favoriteArticles, newFavorite]})), 
 
     isEditable: false,
-    setIsEditable: () => set((state) => ({isEditable: state.isEditable})),
+    setIsEditable: () => set((state) => ({isEditable: !state.isEditable})),
+
+
+    isCurrentEventKey: false,
+    setIsCurrentEventKey: (value) => set({isCurrentEventKey: value }),
+
+    userNotes: [],
+    userNoteText: null,
+    setUserNoteText: (value) => set({userNoteText: value}),
+    userNoteTitle: null,
+    setUserNoteTitle: (value) => set({userNoteTitle: value}),
+    setUserNotes: (value) => set(state => ({userNotes: [...state.userNotes, value]}))
+
 
     
 

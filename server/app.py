@@ -149,7 +149,11 @@ class FavoritesByID(Resource):
         
 class Notes(Resource):
     def get (self):
-        notes = [note.to_dict() for note in Note.query.all()]
+        user_id = request.args.get('user_id')
+        if user_id is not None: 
+            notes = [note.to_dict() for note in Note.query.filter_by(user_id=user_id)]
+        else:
+            return None, 404
         return notes, 200
     def post(self):
         user_id = current_user.get_id()
@@ -169,6 +173,7 @@ class Notes(Resource):
             return newNote.to_dict(), 201
         else:
             return make_response(jsonify({'message' : 'You must login to add a note'}), 401)
+        
             # implement a redirect to the login page
 class NotesByID(Resource):
     def get(self, id):

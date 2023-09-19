@@ -7,19 +7,6 @@
     border-radius: 15px;
 
 }
-.button-container {
-    position: absolute;
-    right: 0;
-    bottom: 0;
-    padding: 1rem; 
-}
-
-.btn-primary.favorite-button{
-    --bs-btn-bg: #dcdcdc;
-    height: 2rem;
-    width: 2rem;
-    padding:0%
-}
 
 
 .favorite-img {
@@ -35,15 +22,34 @@ div.card-header {
     align-content: flex-start;
    
 }
-button.edit-button img {
+button > img {
     height: 100%;
     width: 100%;
     object-fit: contain;
 
 }
-
+.d-flex {
+    display: flex;
+    justify-content: space-between;
+}
+.d-flex button {
+    padding: 3px;
+    width: 8rem;
+}
 button.edit-button {
     justify-content: right;
+}
+.edit-save-trash-container{
+    width: 40%;
+    display: flex;
+    justify-content: flex-end;
+    
+}
+button.edit-save-trash{
+    padding: 0;
+    width: 100%;
+    height: auto;
+    object-fit: cover;
 }
 
 .card-header {

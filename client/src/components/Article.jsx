@@ -12,6 +12,10 @@ import AccordionContext from 'react-bootstrap/AccordionContext'
 import {useAccordionButton} from 'react-bootstrap/AccordionButton'
 import { useEffect, useState, useContext } from 'react'
 import {useParams} from 'react-router-dom'
+import caret from '../assets/caret.svg'
+import save from '../assets/save.svg'
+import edit from '../assets/edit.svg'
+import trash from '../assets/trash.svg'
 
 import FormControl from 'react-bootstrap/FormControl'
 import useStore from '../store'
@@ -19,24 +23,48 @@ import useStore from '../store'
 const PINK = 'rgba(255, 192, 203, 0.6)';
 const BLUE = 'rgba(0, 0, 255, 0.6)';
 
-function ContextToggle({children, eventKey, callback}) {
+function ContextToggle({children, eventKey}) {
     const {activeEventKey} = useContext(AccordionContext)
+    const {setIsCurrentEventKey, isEditable,  setIsEditable} = useStore()
         
     const decoratedOnClick = useAccordionButton(
         eventKey,
-        () => callback && callback(eventKey),
     )
+    useEffect(() => {
+        setIsCurrentEventKey(activeEventKey === eventKey)
+    }, [activeEventKey, eventKey, setIsCurrentEventKey])
 
-    const isCurrentEventKey = activeEventKey === eventKey
+    const isCurrentEventKey = useStore(state => state.isCurrentEventKey)
+
+    function handleSaveEditClick(noteId, isEditable) {
+        if (isEditable) {
+            patchNote(noteId)
+            setIsEditable()
+        }
+        else {
+            setIsEditable()
+        }
+
+    }
+
 
 
 return (
-    <button
-    type="button"
-    style={{ backgroundColor: isCurrentEventKey ? PINK : BLUE }}
-    onClick={decoratedOnClick} >
+    <div className="d-flex">
+        <button
+            type="button"
+            style={{ backgroundColor: isCurrentEventKey ? PINK : BLUE }}
+            onClick={decoratedOnClick} 
+        >
         {children}
-    </button>
+        </button>
+        {isCurrentEventKey && (
+        <div className="edit-save-trash-container">
+          <button className='edit-save-trash' onClick={() => handleSaveEditClick(eventKey)}>{isEditable ? <img src={save} /> : <img src={edit} />}</button>
+          <button className='edit-save-trash'><img src={trash}/></button>
+        </div>
+      )}
+    </div>
 )
 
 } 
@@ -44,17 +72,56 @@ function Article() {
 
     let { id } = useParams()
     let articleId = parseInt(id)
-    const isEditable = useStore(state => state.isEditable)
-   
+    const {userNotes, setUserNotes} = useStore()
+    const {activeEventKey} = useContext(AccordionContext)
     const isFavoriteArticle = useStore(state => state.isFavoriteArticle)
     const toggleIsFavoriteArticle = useStore(state => state.toggleIsFavoriteArticle)
     const current_user = useStore(state => state.current_user)
+    const {isEditable} = useStore()
     const addFavoriteArticle = useStore(state => state.addFavoriteArticle)
     const deleteFavoriteArticle = useStore(state => state.deleteFavoriteArticle)
-    const [activeKey, setActiveKey] = useState(3)
-    console.log(activeKey)
 
     const [articleData, setArticleData] = useState([])
+
+        function noteCard(note, noteId) { 
+            let dynamicKey = noteId;
+            <Card style={{width: '85vw', height: '75vh' }}>
+            {/* add note button to expand accordion element */}
+            <Card.Title>Article Title + 'Notes'</Card.Title>
+            <Accordion activeEventKey={activeEventKey}>
+            
+            <Card>
+            
+                <Card.Header className="d-flex justify-content-between" >
+                    <ContextToggle eventKey={dynamicKey} ><img src={caret}/></ContextToggle>
+                </Card.Header >
+            
+                <Accordion.Collapse eventKey={dynamicKey}>
+                    <Card.Body style={{padding: 5, backgroundColor:'pink'}}>
+                        <FormControl 
+                            className='note-title'
+                            as='textarea'
+                            plaintext
+                            readOnly={!isEditable}
+                            placeholder='Enter your title here...'
+                            rows={1}
+                            style={{backgroundColor: '#b4b5b6', padding: 5}}
+                        />
+                        <FormControl
+                            className='note-text'
+                            as='textarea'
+                            plaintext
+                            rows={5}
+                            readOnly={!isEditable}
+                            placeholder='Enter your notes here...'
+                            style={{backgroundColor: '#b4b5b6', padding: 5}}
+                        />
+                    </Card.Body>
+                </Accordion.Collapse>
+            </Card>
+            </Accordion>
+        </Card> 
+     }
 
     useEffect(() => {
         fetch('/api/article/1')
@@ -66,6 +133,57 @@ function Article() {
             })
     
     }, [])
+
+
+    useEffect(() => {
+        fetch(`/api/notes?user_id=${current_user.id}`)
+            .then(res => res.json())
+            .then(data => {
+                setUserNotes(data)
+                {userNotes.map((note) => (
+                    noteCard(note, note.id)
+                ) )}
+            })
+        }, [current_user.id])
+
+    
+    function patchNote(updatedNote, noteId) {
+        fetch(`/api/notes/${noteId}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(updatedNote)
+        })
+        .then(res => {
+            if (!res.ok) {
+                throw new Error('Failied to patch notes')
+            }
+            return res.json()
+        })
+        .then(() => {
+            setUserNotes(updatedNote)
+        })
+        .catch(error => {
+            console.error('server error', error)
+        })
+    }
+    function addNote() {
+        const newNote = {noteCard}
+            fetch('/api/notes', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(newNote)
+            })
+            .then(res => res.json())
+            .then(data => {
+                setUserNotes([data])
+
+                fetch(`/api/notes?user_id=${current_user.id}`)
+                    .then(res => res.json())
+                    .then(data => {
+                        setUserNotes(data, data.id)
+                    })
+            })
+        }
 
     
     
@@ -146,32 +264,8 @@ function Article() {
                     </Card>
                 </Tab>
                 <Tab eventKey="notes" title="Notes">
-                    <Card style={{width: '85vw', height: '75vh' }}>
-                            {/* add note button to expand accordion element */}
-                        <Card.Title>Article Title + 'Notes'</Card.Title>
-                        <Accordion activeKey={activeKey}>
-                            
-                            <Card>
-                            
-                                <Card.Header className="d-flex justify-content-between" >
-                                    <ContextToggle eventKey="0" callback={callback}>buttontext</ContextToggle>
-                                </Card.Header >
-                               
-                                <Accordion.Collapse eventKey="0">
-                                    <Card.Body style={{padding: 5, backgroundColor:'pink'}}>
-                                        <FormControl
-                                            as='textarea'
-                                            plaintext
-                                            rows={5}
-                                            readOnly={!isEditable}
-                                            placeholder='Enter your notes here...'
-                                            style={{backgroundColor: '#b4b5b6', padding: 5}}
-                                        />
-                                    </Card.Body>
-                                </Accordion.Collapse>
-                            </Card>
-                        </Accordion>
-                    </Card> 
+                    <Button onClick={()=> addNote()}className='add-note'> </Button>
+                   
                 </Tab>
         </Tabs>
     )
