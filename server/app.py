@@ -161,7 +161,7 @@ class Notes(Resource):
         text = data['text']
         title = data['title'] or 'Untitled'
         article_id = data['article_id']
-        if user_id is not None and text is not None:
+        if user_id is not None:
             newNote = Note(
                 title=title,
                 text=text, 
