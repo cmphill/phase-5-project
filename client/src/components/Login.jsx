@@ -53,7 +53,7 @@ function Login() {
                 id: user.id,
                 username: user.username,
             }),
-            console.log(useStore.getState().current_user)
+            console.log(useStore.getState().current_user.id)
         })}
     // .then(res => {
 //     if (!res.ok) {

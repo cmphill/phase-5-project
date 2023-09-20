@@ -56,3 +56,26 @@ button.edit-save-trash{
     height: 8vh
 }
 
+
+.card-title  {
+    display: flex;
+    justify-content: space-between;
+    align-items: left;
+}
+.card-title span {
+    align-items: center;
+    text-align: center;
+    margin-left: 6rem;
+    flex-grow: 1;
+}
+
+ button.add-note{
+    width: 6rem;
+    --bs-btn-bg: #ffc107;
+    --bs-btn-color: black;
+}
+
+.notes-parent-card {
+    overflow-y: auto;
+    max-height: 75vh
+}
