@@ -38,8 +38,8 @@ const useStore = create (set =>  ({
     setIsEditable: () => set((state) => ({isEditable: !state.isEditable})),
 
 
-    isCurrentEventKey: false,
-    setIsCurrentEventKey: (value) => set({isCurrentEventKey: value }),
+    currentEventKey,
+    setCurrentEventKey: (value) => set({isCurrentEventKey: value }),
 
     userNotes: [],
     setUserNotes: (value) => set(state => ({userNotes: [...state.userNotes, value]})),

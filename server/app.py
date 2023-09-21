@@ -123,7 +123,7 @@ class Favorites(Resource):
     def post(self):
         article_id = request.get_json()['article_id']
         user_id = current_user.get_id()
-        if user_id is not None and (article_id or category):
+        if user_id is not None and (article_id):
             newFavorite = Favorite(article_id=article_id, user_id=user_id)
             db.session.add(newFavorite)
             db.session.commit()
