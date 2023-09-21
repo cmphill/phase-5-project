@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import { NavLink, Outlet } from 'react-router-dom';
+import Nav from 'react-bootstrap/Nav'
 import useStore from './store'
 
 
@@ -23,20 +24,20 @@ function Layout() {
       }, [setCurrentUser])
 
     return (
-        <div className="layout">
-            <header>
-                <div className="NavBar">
-                    <NavLink to="/" >Home</NavLink>
-                    <NavLink to="search" >Search</NavLink>
-                    {currentUser? <NavLink to="favorites" >Favorites</NavLink> : null }
-                    {currentUser? <a onClick={logoutCurrentUser}> Logout </a> : <NavLink to="/login" >Login</NavLink>}
-                </div>
-            </header>
-            <main>
-                <Outlet />
-            </main>
+        <div className="Layout">
+        <header className ='header'>
+        <Nav variant ="pills" defaultActiveKey='/home'>
+        <Nav.Link as={NavLink} to="/">Home</Nav.Link>
+        <Nav.Link as={NavLink} to="/search">Search</Nav.Link>
+        {currentUser && <Nav.Link as={NavLink} to="/favorites">Favorites</Nav.Link>}
+        {currentUser ? <Nav.Link as={NavLink} onClick={logoutCurrentUser}>Logout</Nav.Link> : <Nav.Link as={NavLink} to="/login">Login</Nav.Link>}
+        </Nav>
+        </header>
+        <main>
+            <Outlet/>
+        </main>
         </div>
-        )
+    )
 
 }
 

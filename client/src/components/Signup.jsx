@@ -44,12 +44,16 @@ function Signup() {
 
     function setUser() {
         fetch('/api/login') 
-            .then (res => res.json())
+            .then (res => {
+                if (!res.ok) {
+                    throw new Error('Network response was not ok');
+                } 
+                res.json()
+            })
             .then (user => setCurrentUser({
                 id: user.id,
                 username: user.username
             }))
-
         }
 
 
@@ -71,8 +75,13 @@ function Signup() {
         .transform(value => value.toLowerCase())
         .matches(/^[a-z0-9]*$/, 'Username may only contain letters and numbers')
         .required('Username is required'),
-        password: yup.string().min(8, 'Requires minimum eight characters').max(20, 'Maximum 20 Characters Allowed.').required('<Please Enter a Valid Password>'),
-        password_confirmation: yup.string().oneOf([ref("password")], "Passwords do not match.").required('<Must Match Password>')
+        password: yup.string()
+        .max(20, 'Maximum 20 characters allowed.')
+        .required('Please enter a valid password')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+        'Password must contain at least one uppercase letter, one lowercase letter, a number, and be at least 8 characters long'),
+
+        password_confirmation: yup.string().oneOf([ref("password")], "Passwords do not match.").required('Please confirm your password')
     })
 
 
@@ -100,8 +109,10 @@ function Signup() {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             isValid={touched.username && !errors.username}
+                            isInvalid={touched.username && !!errors.username}
                         />
-                        {/* <Form.Control.Feedback tooltip>Looks good!</Form.Control.Feedback> */}
+                        <Form.Control.Feedback type='invalid'>{errors.username}</Form.Control.Feedback>
+                        <Form.Control.Feedback >Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
                 <Row className="mb-3">
@@ -114,8 +125,10 @@ function Signup() {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             isValid={touched.password && !errors.password}
+                            isInvalid={touched.password && !!errors.password}
                         />
-                        {/* <Form.Control.Feedback tooltip>Looks good!</Form.Control.Feedback> */}
+                        <Form.Control.Feedback type='invalid'> {errors.username} </Form.Control.Feedback>
+                        <Form.Control.Feedback >Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
                 <Row className="mb-3">
@@ -128,8 +141,10 @@ function Signup() {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             isValid={touched.password_confirmation && !errors.password_confirmation}
+                            isInvalid={touched.password_confirmation && !!errors.password_confirmation}
                         />
-                        {/* <Form.Control.Feedback tooltip>Looks good!</Form.Control.Feedback> */}
+                        <Form.Control.Feedback type='invalid'>{errors.password_confirmation}</Form.Control.Feedback>
+                        <Form.Control.Feedback tooltip>Looks good!</Form.Control.Feedback>
                     </Form.Group>
                     <Button style={{marginTop: 20}} type="Submit">Sign Up</Button>
                 </Row>

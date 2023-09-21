@@ -75,8 +75,7 @@ function Login() {
         password: yup
         .string()
         .required('Password is required')
-        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
-        'Password must contain at least one uppercase letter, one lowercase letter, a number, and be at least 8 characters long')
+    
     })
 
 
@@ -108,7 +107,7 @@ function Login() {
                         <Form.Control.Feedback type='invalid'>
                             {errors.username}
                         </Form.Control.Feedback>
-                        <Form.Control.Feedback >Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback ></Form.Control.Feedback>
                     </Form.Group>
                 </Row>
                 <Row className="mb-3">
@@ -127,7 +126,7 @@ function Login() {
                         <Form.Control.Feedback type='invalid'>
                             {errors.password}
                         </Form.Control.Feedback>
-                        <Form.Control.Feedback >Looks good!</Form.Control.Feedback>
+                        <Form.Control.Feedback ></Form.Control.Feedback>
                     </Form.Group>
                     <Button type="submit">Login</Button>
                 </Row>
