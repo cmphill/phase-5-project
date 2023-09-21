@@ -42,12 +42,10 @@ const useStore = create (set =>  ({
     setIsCurrentEventKey: (value) => set({isCurrentEventKey: value }),
 
     userNotes: [],
+    setUserNotes: (value) => set(state => ({userNotes: [...state.userNotes, value]})),
 
-    userNoteText: null,
-    setUserNoteText: (value) => set({userNoteText: value}),
-    userNoteTitle: null,
-    setUserNoteTitle: (value) => set({userNoteTitle: value}),
-    setUserNotes: (value) => set(state => ({userNotes: [...state.userNotes, value]}))
+    currentKey: null,
+    setCurrentKey: (value) => set({currentKey: value})
 
 
     

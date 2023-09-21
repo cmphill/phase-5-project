@@ -27,7 +27,7 @@ const BLUE = "rgba(0, 0, 255, 0.6)";
 function Article() {
   let { id } = useParams();
   let articleId = parseInt(id);
-  const { userNotes, setUserNotes, setUserNoteText, setUserNoteTitle } =
+  const { userNotes, setUserNotes, setUserNoteText, setUserNoteTitle} =
     useStore();
   const { activeEventKey } = useContext(AccordionContext);
   const isFavoriteArticle = useStore((state) => state.isFavoriteArticle);
@@ -43,18 +43,20 @@ function Article() {
 
   const [articleData, setArticleData] = useState([]);
 
+
   function noteCard(note) {
-    let dynamicKey = note.id;
+    const eventKey = note.eventKey
+    console.log(eventKey)
     console.log(note)
     return (
       <Card>
         <Card.Header className="d-flex justify-content-between">
-          <ContextToggle eventKey={dynamicKey} note={note} >
+          <ContextToggle eventKey={eventKey} note={note} >
             <img src={caret} />
           </ContextToggle>
         </Card.Header>
 
-        <Accordion.Collapse eventKey={dynamicKey}>
+        <Accordion.Collapse eventKey={eventKey}>
           <Card.Body style={{ padding: 5, backgroundColor: "pink" }}>
             <FormControl
               className="note-title"
@@ -65,7 +67,7 @@ function Article() {
               text={note.title}
               rows={1}
               style={{ backgroundColor: "#b4b5b6", padding: 5 }}
-              onChange={(e) => setUserNoteTitle(e.target.value)}
+              
             />
             <FormControl
               className="note-text"
@@ -76,7 +78,7 @@ function Article() {
               placeholder="Enter your notes here..."
               text={note.text}
               style={{ backgroundColor: "#b4b5b6", padding: 5 }}
-              onChange={(e) => setUserNoteText(e.target.value)}
+              
             />
           </Card.Body>
         </Accordion.Collapse>
@@ -95,12 +97,17 @@ function Article() {
   }, []);
 
   useEffect(() => {
-    console.log(useStore.getState().current_user.id)
-    let user_id = (useStore.getState().current_user.id)
+    console.log(current_user.id)
+    const user_id = (useStore.getState().current_user.id)
     fetch(`/api/notes?user_id=${user_id}`)
       .then((res) => res.json())
       .then(data => {
-        data.forEach((note) => setUserNotes(note))
+        const noteKeys = data.map((note) => ({
+            ...note,
+            eventKey: note.id
+        }))
+        setUserNotes(noteKeys)
+        // data.forEach((note) => setUserNotes(note))
       });
   }, []);
 
@@ -118,8 +125,11 @@ function Article() {
     })
     .then(res => res.json())
     .then(data => {
-        console.log(data)
-        setUserNotes([data])
+        noteKeys = data.map((note) => ({
+            ...note,
+            eventKey: note.id
+        }))
+        setUserNotes(noteKeys)
     })
   }
 
@@ -244,10 +254,12 @@ function ContextToggle({ children, eventKey, note }) {
     }, [activeEventKey, eventKey, setIsCurrentEventKey]);
   
     const isCurrentEventKey = useStore((state) => state.isCurrentEventKey);
+
+    
   
-    function patchNote(note, updatedNote) {
-      console.log(note.id)
-      fetch(`/api/notes/${note.id}`, {
+    function patchNote(eventKey, updatedNote) {
+      console.log(eventKey)
+      fetch(`/api/notes/${eventKey}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(updatedNote),
@@ -266,10 +278,10 @@ function ContextToggle({ children, eventKey, note }) {
         });
     }
   
-    function deleteNote(note) {
-  
-      console.log(note.id, 'delete note now')
-      fetch(`/api/notes/${note.id}`, {
+    function deleteNote(eventKey) {
+        
+      console.log(eventKey, 'delete note now')
+      fetch(`/api/notes/${eventKey}`, {
           method: 'DELETE',
       })
       .then((res) => {
@@ -281,13 +293,13 @@ function ContextToggle({ children, eventKey, note }) {
       }
   
     function handleSaveEditClick(isEditable) {
+        console.log(note.id, 'dis my edit note')
       if (isEditable) {
         const updatedNote = {
-          text: userNoteText,
-          title: userNoteTitle,
-          eventKey: note.id,
+          text: note.text,
+          title: note.title,
         };
-        patchNote(updatedNote, eventKey);
+        patchNote(updatedNote);
         setIsEditable();
       } else {
         setIsEditable();
@@ -300,6 +312,7 @@ function ContextToggle({ children, eventKey, note }) {
           type="button"
           style={{ backgroundColor: isCurrentEventKey ? PINK : BLUE }}
           onClick={decoratedOnClick}
+          eventKey={eventKey}
         >
           {children}
         </button>
@@ -307,11 +320,12 @@ function ContextToggle({ children, eventKey, note }) {
           <div className="edit-save-trash-container">
             <button
               className="edit-save-trash"
-              onClick={() => handleSaveEditClick(note, isEditable)}
+              onClick={() => handleSaveEditClick(eventKey, isEditable)}
+              
             >
               {isEditable ? <img src={save} /> : <img src={edit} />}
             </button>
-            <button  onClick={() => deleteNote(note)} className="edit-save-trash">
+            <button  onClick={() => deleteNote(eventKey)} className="edit-save-trash">
               <img src={trash} />
             </button>
           </div>
