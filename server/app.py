@@ -8,6 +8,7 @@ from flask_restful import Resource
 from flask_login import current_user, login_user, logout_user, login_required, UserMixin
 from sqlalchemy.orm.exc import NoResultFound
 
+
 # Local imports
 # from config import app, db, api
 # Add your model imports

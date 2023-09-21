@@ -2,7 +2,7 @@
 import { ReactSearchAutocomplete } from "react-search-autocomplete";
 import {useState} from 'react'
 import "./Search.css"
-
+import { useNavigate } from 'react-router-dom'
 
 
 function Search() {
@@ -10,31 +10,9 @@ function Search() {
     // const items = useStore(state => state.items)
     // const addItems = useStore(state => state.addItems)
     // const clearItems = useStore(state => state.clearItems)
+    const  navigate = useNavigate()
     const [items, setItems] = useState([])
     const [loading, setLoading] = useState(false)
-
-    // const items = [
-    //     {
-    //       id: 0,
-    //       name: "Cobol",
-    //     },
-    //     {
-    //       id: 1,
-    //       name: "JavaScript",
-    //     },
-    //     {
-    //       id: 2,
-    //       name: "Basic",
-    //     },
-    //     {
-    //       id: 3,
-    //       name: "PHP",
-    //     },
-    //     {
-    //       id: 4,
-    //       name: "Java",
-    //     },
-    //   ];
 
     const handleOnSearch = (string, results) => {
         // console.log(string, results);
@@ -74,7 +52,8 @@ function Search() {
     };
 
     const handleOnSelect = (item) => {
-    console.log(item, 'you done did select');
+    console.log(item)
+    navigate(`/article/${item.id}`)
     };
 
     const handleOnFocus = () => {

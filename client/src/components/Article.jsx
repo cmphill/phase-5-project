@@ -191,6 +191,7 @@ function Article() {
             <img className="article-image" src={articleData.image_url} />
             <Card.Title>{articleData.title}</Card.Title>
             <Card.Subtitle>{articleData.category}</Card.Subtitle>
+            <div className ='article-text-content'>
             <Card.Text>{articleData.description} </Card.Text>
 
             <ListGroup className="list-group-flush">
@@ -201,11 +202,14 @@ function Article() {
             </ListGroup>
             {/* Description space (expanding)
                             favorite button */}
+            </div>
             <div className="button-container">
               <Button
                 size="sm"
                 className="favorite-button"
-                onClick={() => userFavoriteArticle(articleId)}
+                onClick={() => {
+                  console.log(articleId)
+                  userFavoriteArticle(articleId)}}
               >
                 {isFavoriteArticle ? (
                   <img

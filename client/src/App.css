@@ -24,7 +24,42 @@ header.App-header {
 div.nav.nav-pills {
   --bs-nav-link-padding-x: 6rem ;
 }
+ul.nav.nav-tabs {
 
+  display: flex;
+  justify-content: left;
+  width: 85vw;
+  --bs-nav-link-color: white;
+  padding-top: 4rem;
+  margin-left: auto;
+  margin-right: auto;
+  --bs-nav-link-padding-x: 8rem;
+  --bs-nav-tabs-border-width: 3px;
+
+}
+
+div.card-title  {
+  align-items: center;
+  justify-content: center;
+}
+
+div.article-text-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: left;
+  padding-top: 2rem;
+  padding-left: 1.5rem;
+  padding-right: 1.5rem;
+
+}
+
+
+div.tab-content {
+   display: flex;
+   justify-content: center;
+   align-items: center;
+}
 .Layout {
   align-items: flex-start;
   margin: 0;
