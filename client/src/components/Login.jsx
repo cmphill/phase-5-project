@@ -72,7 +72,11 @@ function Login() {
         .transform(value => value.toLowerCase())
         .matches(/^[a-z0-9]*$/, 'Username may only contain letters and numbers')
         .required('Username is required'),
-        password: yup.string().required('<PASSWORD>')
+        password: yup
+        .string()
+        .required('Password is required')
+        .matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[a-zA-Z\d]{8,}$/,
+        'Password must contain at least one uppercase letter, one lowercase letter, a number, and be at least 8 characters long')
     })
 
 
@@ -90,7 +94,7 @@ function Login() {
         {({ handleSubmit, handleBlur, handleChange, values, touched, errors}) => (
             <Form noValidate onSubmit={handleSubmit}>
                 <Row className="mb-3">
-                    <Form.Group as={Col} md="4" controlId="validationFormik01">
+                    <Form.Group as={Col}  controlId="validationFormik01">
                         <Form.Label>Username:  </Form.Label>
                         <Form.Control
                             type="text"
@@ -99,12 +103,16 @@ function Login() {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             isValid={touched.username && !errors.username}
+                            isInvalid={touched.username && !!errors.username}
                         />
-                        {/* <Form.Control.Feedback tooltip>Looks good!</Form.Control.Feedback> */}
+                        <Form.Control.Feedback type='invalid'>
+                            {errors.username}
+                        </Form.Control.Feedback>
+                        <Form.Control.Feedback >Looks good!</Form.Control.Feedback>
                     </Form.Group>
                 </Row>
                 <Row className="mb-3">
-                    <Form.Group as={Col} md="4" controlId="validationFormik02">
+                    <Form.Group as={Col} controlId="validationFormik02">
                         <Form.Label>Password:  </Form.Label>
                         <Form.Control
                             type="text"
@@ -113,8 +121,13 @@ function Login() {
                             onChange={handleChange}
                             onBlur={handleBlur}
                             isValid={touched.password && !errors.password}
+                            isInvalid={touched.password && !!errors.password}
+
                         />
-                        {/* <Form.Control.Feedback tooltip>Looks good!</Form.Control.Feedback> */}
+                        <Form.Control.Feedback type='invalid'>
+                            {errors.password}
+                        </Form.Control.Feedback>
+                        <Form.Control.Feedback >Looks good!</Form.Control.Feedback>
                     </Form.Group>
                     <Button type="submit">Login</Button>
                 </Row>

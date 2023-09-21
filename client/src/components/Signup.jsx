@@ -91,7 +91,7 @@ function Signup() {
         {({ handleSubmit, handleChange, handleBlur, values, touched, errors}) => (
             <Form noValidate onSubmit={handleSubmit}>
                 <Row className="mb-3">
-                    <Form.Group as={Col} md="4" controlId="validationFormik01">
+                    <Form.Group as={Col} controlId="validationFormik01">
                         <Form.Label>Username:  </Form.Label>
                         <Form.Control
                             type="text"
@@ -105,7 +105,7 @@ function Signup() {
                     </Form.Group>
                 </Row>
                 <Row className="mb-3">
-                    <Form.Group as={Col} md="4" controlId="validationFormik02">
+                    <Form.Group as={Col} controlId="validationFormik02">
                         <Form.Label>Password:  </Form.Label>
                         <Form.Control
                             type="text"
@@ -119,7 +119,7 @@ function Signup() {
                     </Form.Group>
                 </Row>
                 <Row className="mb-3">
-                    <Form.Group as={Col} md="4" controlId="validationFormik03">
+                    <Form.Group as={Col} controlId="validationFormik03">
                         <Form.Label>Confirm Password:  </Form.Label>
                         <Form.Control
                             type="text"
@@ -131,7 +131,7 @@ function Signup() {
                         />
                         {/* <Form.Control.Feedback tooltip>Looks good!</Form.Control.Feedback> */}
                     </Form.Group>
-                    <Button type="Submit">Sign Up</Button>
+                    <Button style={{marginTop: 20}} type="Submit">Sign Up</Button>
                 </Row>
                 <Row>
                 {signupErrors && <p> {signupErrors} </p>}
