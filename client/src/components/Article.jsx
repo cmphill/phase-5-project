@@ -1,5 +1,5 @@
 import "./Article.css";
-import "bootstrap/dist/css/bootstrap.min.css";
+// import "bootstrap/dist/css/bootstrap.min.css";
 import unstarred from "../assets/unstarred.png";
 import starred from "../assets/starred.png";
 import Button from "react-bootstrap/Button";
@@ -27,7 +27,7 @@ const BLUE = "rgba(0, 0, 255, 0.6)";
 function Article() {
   let { id } = useParams();
   let articleId = parseInt(id);
-  const { userNotes, setUserNotes, setUserNoteText, setUserNoteTitle} =
+  const { userNotes, setUserNotes} =
     useStore();
   const { activeEventKey } = useContext(AccordionContext);
   const isFavoriteArticle = useStore((state) => state.isFavoriteArticle);
