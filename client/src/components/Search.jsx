@@ -82,9 +82,9 @@ function Search() {
         <header className="App-header">
 
         
-        <div style={{ width: 300, margin: 20 }}>
+        <div className ='search-container' style={{ backgroundColor: "#db8872", width: 500, height: 300, marginTop: 0, borderRadius: 10 }}>
             
-            <div style={{ marginBottom: 20 }}>Search</div>
+            <h1 style={{color:'white', marginBottom: 20, marginTop: 60,}}>Search</h1>
             <ReactSearchAutocomplete
             items={items}
             onSearch={handleOnSearch}

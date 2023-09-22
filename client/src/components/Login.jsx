@@ -76,7 +76,7 @@ function Login() {
 
   return (
     <>
-      <h1>Login</h1>
+      <h1></h1>
       <Formik
         validationSchema={formSchema}
         onSubmit={handleSubmit}
@@ -93,9 +93,10 @@ function Login() {
           touched,
           errors,
         }) => (
-          <Form noValidate onSubmit={handleSubmit}>
+          <div className='form-container'>
+          <Form className='login' noValidate onSubmit={handleSubmit}>
             <Row className="mb-3">
-              <Form.Group as={Col} controlId="validationFormik01">
+              <Form.Group as={Col}  controlId="validationFormik01">
                 <Form.Label>Username: </Form.Label>
                 <Form.Control
                   type="text"
@@ -113,7 +114,7 @@ function Login() {
               </Form.Group>
             </Row>
             <Row className="mb-3">
-              <Form.Group as={Col} controlId="validationFormik02">
+              <Form.Group as={Col}  controlId="validationFormik02">
                 <Form.Label>Password: </Form.Label>
                 <Form.Control
                   type="text"
@@ -141,6 +142,7 @@ function Login() {
             </Row>
             <Row>{loginErrors && <p> {loginErrors} </p>}</Row>
           </Form>
+          </div>
         )}
       </Formik>
     </>

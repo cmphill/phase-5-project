@@ -1,5 +1,5 @@
 import "./Article.css";
-// import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/css/bootstrap.min.css";
 import unstarred from "../assets/unstarred.png";
 import starred from "../assets/starred.png";
 import Button from "react-bootstrap/Button";

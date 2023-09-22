@@ -20,7 +20,8 @@ const useStore = create (set =>  ({
     addItems: (item) => set(state => ({items: [...state.items, item]})),
     clearItems: () => set({items: []}),
 
-    isFavoriteArticle: !!state.favoriteArticles.filter(favorite => favorite.id === articleId),
+    // isFavoriteArticle: !!state.favoriteArticles.filter(favorite => favorite.id === articleId),
+    isFavoriteArticle: false,
     toggleIsFavoriteArticle: () => set((state) => ({isFavoriteArticle: !state.isFavoriteArticle})),
     favoriteArticles: [],
     deleteFavoriteArticle: (favoriteId) => set(state => ({
