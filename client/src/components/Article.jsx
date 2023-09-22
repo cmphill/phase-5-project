@@ -24,6 +24,7 @@ const PINK = "rgba(255, 192, 203, 0.6)";
 const BLUE = "rgba(0, 0, 255, 0.6)";
 
 
+
 function Article() {
   let { id } = useParams();
   let articleId = parseInt(id);
@@ -42,6 +43,8 @@ function Article() {
   );
 
   const [articleData, setArticleData] = useState([]);
+
+ 
 
 
   function noteCard(note) {
@@ -97,18 +100,15 @@ function Article() {
   }, []);
 
   useEffect(() => {
+    console.log(useStore.getState().current_user.id)
     console.log(current_user.id)
-    const user_id = (useStore.getState().current_user.id)
-    fetch(`/api/notes?user_id=${user_id}`)
+    fetch(`/api/notes?user_id=${2}`)
       .then((res) => res.json())
       .then(data => {
-        const noteKeys = data.map((note) => ({
-            ...note,
-            eventKey: note.id
-        }))
-        setUserNotes(noteKeys)
-        // data.forEach((note) => setUserNotes(note))
-      });
+          data.map((note) => setUserNotes(note)),
+          console.log(note)
+        }),
+        console.log(userNotes)
   }, []);
 
 
@@ -255,7 +255,7 @@ function ContextToggle({ children, eventKey, note }) {
     const decoratedOnClick = useAccordionButton(eventKey);
     useEffect(() => {
       setIsCurrentEventKey(activeEventKey === eventKey);
-    }, [activeEventKey, eventKey, setIsCurrentEventKey]);
+    }, [activeEventKey, eventKey]);
   
     const isCurrentEventKey = useStore((state) => state.isCurrentEventKey);
 
@@ -282,7 +282,7 @@ function ContextToggle({ children, eventKey, note }) {
         });
     }
   
-    function deleteNote(eventKey) {
+    function deleteNote() {
         
       console.log(eventKey, 'delete note now')
       fetch(`/api/notes/${eventKey}`, {
@@ -293,8 +293,14 @@ function ContextToggle({ children, eventKey, note }) {
               throw new Error("Failed to delete. Please try again later")
            }
            return {'' : ''}, 204
-          })     
-      }
+          })
+      .then(() => {
+          setuserNotes(notes => notes.filter(note => note.id !== eventKey))
+      })
+      .catch((error) => {
+        console.error("server error", error)
+      })
+    }
   
     function handleSaveEditClick(isEditable) {
         console.log(note.id, 'dis my edit note')
@@ -329,7 +335,7 @@ function ContextToggle({ children, eventKey, note }) {
             >
               {isEditable ? <img src={save} /> : <img src={edit} />}
             </button>
-            <button  onClick={() => deleteNote(eventKey)} className="edit-save-trash">
+            <button  onClick={deleteNote} className="edit-save-trash">
               <img src={trash} />
             </button>
           </div>

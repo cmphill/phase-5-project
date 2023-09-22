@@ -30,8 +30,11 @@ function Login() {
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(values),
     })
-      .then((res) => {
-        res.json();
+      .then((res) => { 
+        if (!res.ok) {
+          throw new Error('Invalid Login')
+        }
+        return res.json();
       })
       .then(() => {
         setUser();
@@ -50,10 +53,10 @@ function Login() {
         setCurrentUser({
           id: user.id,
           username: user.username,
-        }),
-          console.log(useStore.getState().current_user.id);
+        })
       });
-  }
+    }
+    console.log(current_user);
   // .then(res => {
   //     if (!res.ok) {
   //         throw new Error('Network response was not ok');
