@@ -125,12 +125,11 @@ function Article() {
     })
     .then(res => res.json())
     .then(data => {
-        noteKeys = data.map((note) => ({
-            ...note,
-            eventKey: note.id
-        }))
-        setUserNotes(noteKeys)
-    })
+        data.map((note) => setUserNotes(note))
+        console.log(note)
+        }),
+        console.log(userNotes)
+    }
   }
 
   function userFavoriteArticle(articleId) {
