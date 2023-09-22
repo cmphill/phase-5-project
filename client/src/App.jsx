@@ -6,11 +6,12 @@ import {createBrowserRouter, Route, createRoutesFromElements, RouterProvider} fr
 import Layout from './Layout.jsx';
 
 import Article from './components/Article.jsx';
-import Favorites from './components/Favorites.jsx';
+import Users from './components/Users.jsx';
 import Home from './components/Home.jsx';
 import Login from './components/Login.jsx';
 import Signup from './components/Signup.jsx';
 import Search from './components/Search';
+import Notes from './components/Notes.jsx';
 
 function App() {
 
@@ -26,7 +27,8 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path ="/search" element={<Search />} />
         <Route path="/article/:id" element={<Article />}/>
-        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/users" element={<Users />} />
+        <Route path='/notes' element={<Notes />} />
       </Route>
     )
   );

@@ -1,14 +1,14 @@
 
 import { useEffect } from 'react'
 
-function Favorites() {
+function Users() {
  
 
     return (
         <div>
-            <h1> Favorites </h1>
+            <h1> Users </h1>
         </div>
     )
 }
 
-export default Favorites
+export default Users

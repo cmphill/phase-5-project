@@ -16,9 +16,11 @@ import caret from "../assets/caret.svg";
 import save from "../assets/save.svg";
 import edit from "../assets/edit.svg";
 import trash from "../assets/trash.svg";
+import NoteCard from './NoteCard'
 
 import FormControl from "react-bootstrap/FormControl";
 import useStore from "../store";
+import Notes from './Notes'
 
 const PINK = "rgba(255, 192, 203, 0.6)";
 const BLUE = "rgba(0, 0, 255, 0.6)";
@@ -30,13 +32,12 @@ function Article() {
   let articleId = parseInt(id);
   const { userNotes, setUserNotes} =
     useStore();
-  const { activeEventKey } = useContext(AccordionContext);
   const isFavoriteArticle = useStore((state) => state.isFavoriteArticle);
   const toggleIsFavoriteArticle = useStore(
     (state) => state.toggleIsFavoriteArticle
   );
   const current_user = useStore((state) => state.current_user);
-  const { isEditable } = useStore();
+ 
   const addFavoriteArticle = useStore((state) => state.addFavoriteArticle);
   const deleteFavoriteArticle = useStore(
     (state) => state.deleteFavoriteArticle
@@ -47,47 +48,7 @@ function Article() {
  
 
 
-  function noteCard(note) {
-    const eventKey = note.eventKey
-    console.log(eventKey)
-    console.log(note)
-    return (
-      <Card>
-        <Card.Header className="d-flex justify-content-between">
-          <ContextToggle eventKey={eventKey} note={note} >
-            <img src={caret} />
-          </ContextToggle>
-        </Card.Header>
 
-        <Accordion.Collapse eventKey={eventKey}>
-          <Card.Body style={{ padding: 5, backgroundColor: "pink" }}>
-            <FormControl
-              className="note-title"
-              as="textarea"
-              plaintext
-              readOnly={!isEditable}
-              placeholder="Enter your title here..."
-              text={note.title}
-              rows={1}
-              style={{ backgroundColor: "#b4b5b6", padding: 5 }}
-              
-            />
-            <FormControl
-              className="note-text"
-              as="textarea"
-              plaintext
-              rows={5}
-              readOnly={!isEditable}
-              placeholder="Enter your notes here..."
-              text={note.text}
-              style={{ backgroundColor: "#b4b5b6", padding: 5 }}
-              
-            />
-          </Card.Body>
-        </Accordion.Collapse>
-      </Card>
-    );
-  }
 
   useEffect(() => {
     console.log(id)
@@ -99,37 +60,8 @@ function Article() {
       });
   }, []);
 
-  useEffect(() => {
-    console.log(useStore.getState().current_user.id)
-    console.log(current_user.id)
-    fetch(`/api/notes?user_id=${2}`)
-      .then((res) => res.json())
-      .then(data => {
-          data.map((note) => setUserNotes(note)),
-          console.log(note)
-        }),
-        console.log(userNotes)
-  }, []);
 
 
-  function addNote() {
-    const newNote = ({
-      text: "",
-      title: "",
-      article_id: 1,
-    });
-    fetch('/api/notes', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(newNote)
-    })
-    .then(res => res.json())
-    .then(data => {
-        data
-        })
-        setUserNotes(noteKeys)
-    })
-  }
 
   function userFavoriteArticle(articleId) {
     if (isFavoriteArticle !== true && current_user) {
@@ -179,6 +111,8 @@ function Article() {
       console.log("you are not logged in");
     }
   }
+
+  
 
   return (
     <Tabs>
@@ -230,116 +164,15 @@ function Article() {
       <Tab eventKey="notes" title="Notes">
         <Card className="notes-parent-card" style={{ width: "85vw" }}>
           <Card.Title className="card-title">
-            <span>Article Title + 'Notes'</span>
-            <Button onClick={addNote} className="add-note">
-             
+            <span>Notes</span>
+            <Button className="add-note">
               Add Note
             </Button>
           </Card.Title>
-
-          <Accordion activeEventKey={activeEventKey}>
-            {userNotes.map((note) =>(
-                noteCard(note)))}
-          </Accordion>
-        </Card>
+          </Card>
       </Tab>
     </Tabs>
-  );
+  )
+
 }
-function ContextToggle({ children, eventKey, note }) {
-    const { activeEventKey } = useContext(AccordionContext);
-    const { setIsCurrentEventKey, isEditable, setIsEditable } = useStore();
-  
-    const decoratedOnClick = useAccordionButton(eventKey);
-    useEffect(() => {
-      setIsCurrentEventKey(activeEventKey === eventKey);
-    }, [activeEventKey, eventKey]);
-  
-    const isCurrentEventKey = useStore((state) => state.isCurrentEventKey);
-
-    
-  
-    function patchNote(eventKey, updatedNote) {
-      console.log(eventKey)
-      fetch(`/api/notes/${eventKey}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(updatedNote),
-      })
-        .then((res) => {
-          if (!res.ok) {
-            throw new Error("Failied to patch notes");
-          }
-          return res.json();
-        })
-        .then(() => {
-          setUserNotes(notes => notes.map(note => note.id === eventKey ? updatedNote : note));
-        })
-        .catch((error) => {
-          console.error("server error", error);
-        });
-    }
-  
-    function deleteNote() {
-        
-      console.log(eventKey, 'delete note now')
-      fetch(`/api/notes/${eventKey}`, {
-          method: 'DELETE',
-      })
-      .then((res) => {
-          if (!res.ok) {
-              throw new Error("Failed to delete. Please try again later")
-           }
-           return {'' : ''}, 204
-          })
-      .then(() => {
-          setuserNotes(notes => notes.filter(note => note.id !== eventKey))
-      })
-      .catch((error) => {
-        console.error("server error", error)
-      })
-    }
-  
-    function handleSaveEditClick(isEditable) {
-        console.log(note.id, 'dis my edit note')
-      if (isEditable) {
-        const updatedNote = {
-          text: note.text,
-          title: note.title,
-        };
-        patchNote(updatedNote);
-        setIsEditable();
-      } else {
-        setIsEditable();
-      }
-    }
-  
-    return (
-      <div className="d-flex">
-        <button
-          type="button"
-          style={{ backgroundColor: isCurrentEventKey ? PINK : BLUE }}
-          onClick={decoratedOnClick}
-          eventKey={eventKey}
-        >
-          {children}
-        </button>
-        {isCurrentEventKey && (
-          <div className="edit-save-trash-container">
-            <button
-              className="edit-save-trash"
-              onClick={() => handleSaveEditClick(eventKey, isEditable)}
-              
-            >
-              {isEditable ? <img src={save} /> : <img src={edit} />}
-            </button>
-            <button  onClick={deleteNote} className="edit-save-trash">
-              <img src={trash} />
-            </button>
-          </div>
-        )}
-      </div>
-    );
-  }
-
 export default Article;
