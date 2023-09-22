@@ -125,11 +125,10 @@ function Article() {
     })
     .then(res => res.json())
     .then(data => {
-        data.map((note) => setUserNotes(note))
-        console.log(note)
-        }),
-        console.log(userNotes)
-    }
+        data
+        })
+        setUserNotes(noteKeys)
+    })
   }
 
   function userFavoriteArticle(articleId) {
