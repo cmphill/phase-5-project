@@ -157,17 +157,19 @@ class Notes(Resource):
             return None, 404
         return notes, 200
     def post(self):
-        user_id = current_user.get_id()
+        print('we are ain tahe post ')
+        user_id = 1
         data = request.get_json()
+        print(data)
         text = data['text']
         title = data['title'] or 'Untitled'
-        article_id = data['article_id']
-        if user_id is not None and text is not None:
+        # article_id = data['article_id']
+        if user_id:
             newNote = Note(
                 title=title,
                 text=text, 
                 user_id=user_id,
-                article_id=article_id
+                article_id=1
                 )
             db.session.add(newNote)
             db.session.commit()

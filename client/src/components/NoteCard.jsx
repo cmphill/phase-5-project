@@ -9,6 +9,7 @@ const NoteCard = ({ data }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   function handleDelete() {
+    console.log(data)
     fetch(`/api/notes/${data.id}`, {
       method: "DELETE",
     });
@@ -73,6 +74,7 @@ const NoteCard = ({ data }) => {
         console.error("server error", error);
       });
   }
+
 
   return (
     <Accordion.Item eventKey={data.id}>
